@@ -1,0 +1,1 @@
+DMA_HandleTypeDef hdma_memtomem_dma1_channel6;

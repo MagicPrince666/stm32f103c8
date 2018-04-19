@@ -1,0 +1,32 @@
+
+#n/** Configure pins as #n #t#t #t* Analog #n #t#t #t* Input #n #t#t #t* Output#n #t#t #t* EVENT_OUT#n #t#t #t* EXTI
+*/
+static void MX_GPIO_Init(void)
+{
+#n
+#tGPIO_InitTypeDef GPIO_InitStruct;
+#n#t/* GPIO Ports Clock Enable */
+#t__HAL_RCC_GPIOC_CLK_ENABLE();
+#t__HAL_RCC_GPIOD_CLK_ENABLE();
+#t__HAL_RCC_GPIOA_CLK_ENABLE();
+#t__HAL_RCC_GPIOB_CLK_ENABLE();
+#n#t/*Configure GPIO pin Output Level */
+#tHAL_GPIO_WritePin(GPIOB, GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5 #n#t#t#t#t#t#t#t#t#t#t#t#t#t|GPIO_PIN_8|GPIO_PIN_9, GPIO_PIN_SET);
+#n#t/*Configure GPIO pin : PB0 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_0;
+#tGPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+#tGPIO_InitStruct.Pull = GPIO_PULLUP;
+#tHAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#n#t/*Configure GPIO pins : PB2 PB3 PB4 PB5 #n#t#t#t#t#t#t#t#t#t#t#t#t#t PB8 PB9 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5 #n#t#t#t#t#t#t#t#t#t#t#t#t#t|GPIO_PIN_8|GPIO_PIN_9;
+#tGPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+#tGPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+#tHAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#n#t/*Configure GPIO pin : PA15 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_15;
+#tGPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+#tGPIO_InitStruct.Pull = GPIO_PULLUP;
+#tHAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#n
+}
+#n
