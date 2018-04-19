@@ -92,8 +92,8 @@ void Uart_RecvBuffTask(void const * argument)
 	RxBuf[3] = 128;
 	RxBuf[4] = 0;
 
-    MPU_Init();
-    IAPRead();
+    //MPU_Init();
+    //IAPRead();
     
     LED0 = 0;
     LED1 = 1;
@@ -103,10 +103,10 @@ void Uart_RecvBuffTask(void const * argument)
     //printf("Length of line : %f\n",line.getLength());
     for(;;)
     {  
-        recv_cnt = UART1_DMA_CNT;  //接收计数
+        recv_cnt = UART2_DMA_CNT;  //接收计数
         if(recv_cnt)//如果有收到数据 recv_cnt不为0
         {
-            recv_cnt = UART1_DMA_CNT;  //重新读取接收计数
+            recv_cnt = UART2_DMA_CNT;  //重新读取接收计数
             /* 使用第一缓存区 */
             if(RECV1.flag == 0)
             {       
@@ -118,28 +118,28 @@ void Uart_RecvBuffTask(void const * argument)
             }
         }
 
-       if(NRF24L01_RxPacket(RxBuf)==0)//
+       if(NRF24L01_RxPacket(RxBuf)==0)
 		{
-			if(RxBuf[5] == 1)	//
+			if(RxBuf[5] == 1)	
 			{
 				RxBuf[5] = 0;
 				if(RxBuf[4] < 20)
 				{
 					IAP_Gyro();
 					PWM(40,40,40,40);
-					osDelay(10); //
+					osDelay(10); 
 					PWM(0,0,0,0);	
 				}
 			}
 
-			if(RxBuf[6] == 1)	//
+			if(RxBuf[6] == 1)	
 			{
 				RxBuf[6] = 0;
 				if(RxBuf[4] < 20)
 				{
-					STMFLASH_ErasePage(STM32_FLASH_BASE); //
+					STMFLASH_ErasePage(STM32_FLASH_BASE); 
 					PWM(40,40,40,40); 
-					osDelay(10); //
+					osDelay(10); 
 					PWM(0,0,0,0);	
 				}
 			}
