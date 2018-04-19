@@ -23,15 +23,6 @@ static void MX_DMA_Init(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 #n#t/* DMA interrupt init */
-#t/* DMA1_Channel1_IRQn interrupt configuration */
-#tHAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 5, 0);
-#tHAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
-#t/* DMA1_Channel2_IRQn interrupt configuration */
-#tHAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 5, 0);
-#tHAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
-#t/* DMA1_Channel3_IRQn interrupt configuration */
-#tHAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 5, 0);
-#tHAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
 #t/* DMA1_Channel4_IRQn interrupt configuration */
 #tHAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 5, 0);
 #tHAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);

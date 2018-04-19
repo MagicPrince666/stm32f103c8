@@ -11,8 +11,8 @@ int _write (int fd, char *pBuffer, int size)
 {  
 	for (int i = 0; i < size; i++)  
 	{  
-		while((USART1->SR&0X40)==0);//等待上一次串口数据发送完成  
-		USART1->DR = (u8) pBuffer[i];      	//写DR,串口1将发送数据 
+		while((USART2->SR&0X40)==0);//等待上一次串口数据发送完成  
+		USART2->DR = (u8) pBuffer[i];      	//写DR,串口1将发送数据 
 	}  
 	return size;  
 } 
@@ -89,3 +89,4 @@ void uart_init(u32 pclk2,u32 bound)
 	MY_NVIC_Init(3,3,USART1_IRQn,2);//组2，最低优先级 
 #endif
 }
+

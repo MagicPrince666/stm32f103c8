@@ -20,13 +20,20 @@
 ////////////////////////////////////////////////////////////////////////////////// 	  
  
 //通过改变TIM1->CCR1的值来改变占空比，从而控制LED0的亮度
-#define PWM1_VAL TIM2->CCR1  
-#define PWM2_VAL TIM2->CCR2 
-#define PWM3_VAL TIM1->CCR1 
-#define PWM4_VAL TIM1->CCR4  
+// #define PWM1_VAL TIM2->CCR1  
+// #define PWM2_VAL TIM2->CCR2 
+// #define PWM3_VAL TIM1->CCR1 
+// #define PWM4_VAL TIM1->CCR4  
+#define PWM1_VAL TIM3->CCR1  
+#define PWM2_VAL TIM3->CCR2 
+#define PWM3_VAL TIM3->CCR3 
+#define PWM4_VAL TIM3->CCR4 
+#define PWM5_VAL TIM2->CCR1  
+#define PWM6_VAL TIM2->CCR2  
  
 void TIM1_PWM_Init(u16 arr,u16 psc);
 void TIM2_PWM_Init(u16 arr,u16 psc);
+void TIM3_PWM_Init(u16 arr,u16 psc);
 void TIM2_Cap_Init(u16 arr,u16 psc);
 void TIM3_Int_Init(u16 arr,u16 psc);
 void TIM4_Int_Init(u16 arr,u16 psc);

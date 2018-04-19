@@ -30,26 +30,26 @@ uint8_t readbuf[Recv1_LEN + 1];
 
 uint32_t index1 = 0;
 
-void DMA1_Channel5_IRQHandler(void)
+void DMA1_Channel6_IRQHandler(void)
 {
-  index1 = DMA1->ISR & DMACHN5_STA;//获取中断状态
+  index1 = DMA1->ISR & DMACHN6_STA;//获取中断状态
   //index &=0xF00;//只关心通道5的状态
 
-  if(index1 & DMACHN5_ERR)//传输出错
+  if(index1 & DMACHN6_ERR)//传输出错
   {
-    printf("uart1 transfer error\n");
+    printf("uart2 transfer error\n");
   }
 
-  if(index1 & DMACHN5_COM)//接收到一个完整的数据包
+  if(index1 & DMACHN6_COM)//接收到一个完整的数据包
   {
-    DMA1->IFCR |= DMACHN5_IRQ;//清除通道5所有中断标志
+    DMA1->IFCR |= DMACHN6_IRQ;//清除通道5所有中断标志
 
     if(RECV1.flag)//交换缓存
     {   
       RECV1.flag = 0;
       //ring.write(rbuf,RECV1.recvbuf,Recv1_LEN);
 
-      Start_UART_DMA_Transmit(UART1_RXDMA_CHN,Recv1_LEN);
+      Start_UART_DMA_Transmit(UART2_RXDMA_CHN,Recv1_LEN);
 
       printf("%s\n",RECV1.recvbuf);  //处理第二缓存数据    
     }
@@ -64,13 +64,15 @@ void Uart_RecvBuffTask(void const * argument)
     int i = 0;
 
     
-    MYDMA_uart_rx_conf(UART1_RXDMA_CHN,(uint32_t)&USART1->DR,(uint32_t)(RECV1.recvbuf),Recv1_LEN);
+    //MYDMA_uart_rx_conf(UART1_RXDMA_CHN,(uint32_t)&USART1->DR,(uint32_t)(RECV1.recvbuf),Recv1_LEN);
+    MYDMA_uart_rx_conf(UART2_RXDMA_CHN,(uint32_t)&USART2->DR,(uint32_t)(RECV1.recvbuf),Recv1_LEN);
     
     //RingBuffer ring;
     //ring.create();
 
-    TIM1_PWM_Init(1000,71);
+    //TIM1_PWM_Init(1000,71);
     TIM2_PWM_Init(1000,71);
+    TIM3_PWM_Init(1000,71);
 
     PWM1_VAL = 100;
     PWM2_VAL = 100;
@@ -111,7 +113,7 @@ void Uart_RecvBuffTask(void const * argument)
                 RECV1.flag = 1;                                     //切换至第二缓存标志
                 RECV1.recvbuf[recv_cnt] = 0;
                 //ring.write(RECV1.recvbuf,recv_cnt);
-                Start_UART_DMA_Transmit(UART1_RXDMA_CHN,Recv1_LEN); //开始接收
+                Start_UART_DMA_Transmit(UART2_RXDMA_CHN,Recv1_LEN); //开始接收
                 printf("uart1:%s\n",RECV1.recvbuf);
             }
         }

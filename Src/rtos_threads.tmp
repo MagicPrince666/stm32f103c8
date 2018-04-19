@@ -2,6 +2,9 @@
 #n#n/* StartDefaultTask function */
 void StartDefaultTask(void const * argument)
 {
+#t/* init code for USB_DEVICE */
+#tMX_USB_DEVICE_Init();#n
+            
 
 #n
 #t/* USER CODE BEGIN 5 */
