@@ -56,7 +56,7 @@ void DMA1_Channel5_IRQHandler(void)
   }
 }
 
-cycle_buffer* buffer;
+extern cycle_buffer* buffer;
 /* uart数据接收任务 */
 void Uart_RecvBuffTask(void const * argument)
 {
@@ -65,12 +65,9 @@ void Uart_RecvBuffTask(void const * argument)
 
     
     MYDMA_uart_rx_conf(UART1_RXDMA_CHN,(uint32_t)&USART1->DR,(uint32_t)(RECV1.recvbuf),Recv1_LEN);
-    
-    
-    RingBuffer ring(buffer);
-    //buffer->size = DEFAULT_BUF_SIZE;  
-    //buffer->in   = 0;
-    //buffer->out  = 0;
+
+    RingBuffer ring;
+
 
     TIM1_PWM_Init(1000,71);
     TIM2_PWM_Init(1000,71);
@@ -113,7 +110,7 @@ void Uart_RecvBuffTask(void const * argument)
             {       
                 RECV1.flag = 1;                                     //切换至第二缓存标志
                 RECV1.recvbuf[recv_cnt] = 0;
-                //ring.write(RECV1.recvbuf,recv_cnt);
+                ring.write(buffer,RECV1.recvbuf,recv_cnt);
                 Start_UART_DMA_Transmit(UART1_RXDMA_CHN,Recv1_LEN); //开始接收
                 printf("uart1:%s\n",RECV1.recvbuf);
             }
@@ -153,13 +150,13 @@ void Uart_RecvBuffTask(void const * argument)
             LED0 = ~LED0;
             LED1 = ~LED1;
             
-            /*
-            if(ring.read(readbuf,DEFAULT_BUF_SIZE))
+            //unsigned char readbuf[64];
+            if(ring.read(buffer,readbuf,DEFAULT_BUF_SIZE))
             {
                 readbuf[Recv1_LEN] = 0;
-                //printf("%s",readbuf);
+                printf("%s",readbuf);
             }
-            */
+            
         }
         //PWM4_VAL = i*30;
         osDelay(10);//任务延时 会影响系统调度

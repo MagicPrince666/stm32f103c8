@@ -7,7 +7,7 @@
 
 typedef struct 
 {  
-    unsigned char buf[DEFAULT_BUF_SIZE];
+    unsigned char*  buf;
     unsigned int   size;
     unsigned int   in;
     unsigned int   out;
@@ -17,7 +17,7 @@ typedef struct
 class RingBuffer {
 public:
     //cycle_buffer* buffer;
-    RingBuffer(cycle_buffer *buffer);
+    RingBuffer();
     ~RingBuffer();
 
     static int read(cycle_buffer *buffer,char *target,unsigned int amount);

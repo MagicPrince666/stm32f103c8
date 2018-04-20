@@ -5,16 +5,28 @@
 
 #define Min(x, y) ((x) < (y) ? (x) : (y))
 
-//cycle_buffer* buffer;
+cycle_buffer* buffer;
 
-RingBuffer::RingBuffer(cycle_buffer *buffer)
+RingBuffer::RingBuffer()
 {
     //memset(buffer, 0, sizeof(RingBuf)); 
     printf("init ring buffer start\n");
+    buffer = (cycle_buffer *)malloc(sizeof(cycle_buffer));
+    if (!buffer) 
+    {
+        return; 
+    }
+    memset(buffer, 0, sizeof(RingBuffer)); 
 
     buffer->size = DEFAULT_BUF_SIZE;  
     buffer->in   = 0;
     buffer->out  = 0;  
+
+    buffer->buf = (unsigned char *)malloc(buffer->size);  
+    if (!buffer->buf)
+    {
+        free(buffer);
+    }
 
     printf("init ring buffer end\n");
     //memset(buffer->buf, 0, DEFAULT_BUF_SIZE);
@@ -23,6 +35,10 @@ RingBuffer::RingBuffer(cycle_buffer *buffer)
 RingBuffer::~RingBuffer()
 {
     printf("quit ring buffer\n");
+    if(buffer) {
+        free(buffer->buf);
+        free(buffer);
+    }
 }
 
 
