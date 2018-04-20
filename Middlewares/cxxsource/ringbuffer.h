@@ -5,28 +5,27 @@
 
 #define DEFAULT_BUF_SIZE 64
 
-typedef struct cycle_buffer 
+typedef struct 
 {  
     unsigned char buf[DEFAULT_BUF_SIZE];
     unsigned int   size;
     unsigned int   in;
     unsigned int   out;
-}RingBuf;  
+}cycle_buffer;  
 
 
 class RingBuffer {
 public:
-    void create();
+    //cycle_buffer* buffer;
+    RingBuffer(cycle_buffer *buffer);
+    ~RingBuffer();
 
-    void destroy(RingBuf *buffer);
-
-    int read(char *target,unsigned int amount);
-    int write(char *data,unsigned int length);
+    static int read(cycle_buffer *buffer,char *target,unsigned int amount);
+    static int write(cycle_buffer *buffer,char *data,unsigned int length);
 
 protected:
-    RingBuf* buffer;
-    int empty(RingBuf *buffer);
-    int Reset(RingBuf *buffer);
+    int empty(cycle_buffer *buffer);
+    int Reset(cycle_buffer *buffer);
 };
 
 #endif

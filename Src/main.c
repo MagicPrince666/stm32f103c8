@@ -530,6 +530,11 @@ void _Error_Handler(char * file, int line)
 {
   while(1) 
   {
+    printf("file %s on line %d\n", file, line);//error message
+    LED0 = 0;
+    LED1 = 0;
+    LED2 = 0;
+    LED3 = 0;
   }
 }
 

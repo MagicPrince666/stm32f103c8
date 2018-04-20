@@ -1,27 +1,32 @@
 #include "ringbuffer.h"
 #include <string.h>
+#include <stdio.h>
 
 
 #define Min(x, y) ((x) < (y) ? (x) : (y))
 
-void RingBuffer::create()
+//cycle_buffer* buffer;
+
+RingBuffer::RingBuffer(cycle_buffer *buffer)
 {
-    memset(buffer, 0, sizeof(RingBuf)); 
- 
+    //memset(buffer, 0, sizeof(RingBuf)); 
+    printf("init ring buffer start\n");
+
     buffer->size = DEFAULT_BUF_SIZE;  
     buffer->in   = 0;
     buffer->out  = 0;  
 
-    memset(buffer->buf, 0, DEFAULT_BUF_SIZE);
+    printf("init ring buffer end\n");
+    //memset(buffer->buf, 0, DEFAULT_BUF_SIZE);
 }
 
-
-void RingBuffer::destroy(RingBuf *buffer)
+RingBuffer::~RingBuffer()
 {
-
+    printf("quit ring buffer\n");
 }
 
-int RingBuffer::Reset(RingBuf *buffer)
+
+int RingBuffer::Reset(cycle_buffer *buffer)
 {
     if (buffer == NULL)
     {
@@ -35,12 +40,12 @@ int RingBuffer::Reset(RingBuf *buffer)
     return 0;
 }
 
-int RingBuffer::empty(RingBuf *buffer)
+int RingBuffer::empty(cycle_buffer *buffer)
 {
     return buffer->in == buffer->out;
 }
 
-int RingBuffer::write(char *data,unsigned int length)
+int RingBuffer::write(cycle_buffer *buffer,char *data,unsigned int length)
 {
     unsigned int len = 0;
 
@@ -56,7 +61,7 @@ int RingBuffer::write(char *data,unsigned int length)
     return length;
 }
 
-int RingBuffer::read(char *target,unsigned int amount)
+int RingBuffer::read(cycle_buffer *buffer,char *target,unsigned int amount)
 {
     unsigned int len = 0;  
 

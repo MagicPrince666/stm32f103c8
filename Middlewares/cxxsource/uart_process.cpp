@@ -56,7 +56,7 @@ void DMA1_Channel5_IRQHandler(void)
   }
 }
 
-
+cycle_buffer* buffer;
 /* uart数据接收任务 */
 void Uart_RecvBuffTask(void const * argument)
 {
@@ -66,16 +66,19 @@ void Uart_RecvBuffTask(void const * argument)
     
     MYDMA_uart_rx_conf(UART1_RXDMA_CHN,(uint32_t)&USART1->DR,(uint32_t)(RECV1.recvbuf),Recv1_LEN);
     
-    //RingBuffer ring;
-    //ring.create();
+    
+    RingBuffer ring(buffer);
+    //buffer->size = DEFAULT_BUF_SIZE;  
+    //buffer->in   = 0;
+    //buffer->out  = 0;
 
     TIM1_PWM_Init(1000,71);
     TIM2_PWM_Init(1000,71);
 
-    PWM1_VAL = 100;
-    PWM2_VAL = 100;
-    PWM3_VAL = 100;
-    PWM4_VAL = 100;
+    PWM1_VAL = 0;
+    PWM2_VAL = 0;
+    PWM3_VAL = 0;
+    PWM4_VAL = 0;
 
     int res = 0;
     NRF24L01_Init();    	
@@ -90,8 +93,8 @@ void Uart_RecvBuffTask(void const * argument)
 	RxBuf[3] = 128;
 	RxBuf[4] = 0;
 
-    MPU_Init();
-    IAPRead();
+    //MPU_Init();
+    //IAPRead();
     
     LED0 = 0;
     LED1 = 1;
