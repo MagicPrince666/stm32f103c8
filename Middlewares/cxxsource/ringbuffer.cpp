@@ -9,13 +9,8 @@ cycle_buffer* buffer;
 
 RingBuffer::RingBuffer()
 {
-    //memset(buffer, 0, sizeof(RingBuf)); 
-    printf("init ring buffer start\n");
     buffer = (cycle_buffer *)malloc(sizeof(cycle_buffer));
-    if (!buffer) 
-    {
-        return; 
-    }
+    if (!buffer) return; 
     memset(buffer, 0, sizeof(RingBuffer)); 
 
     buffer->size = DEFAULT_BUF_SIZE;  
@@ -26,18 +21,18 @@ RingBuffer::RingBuffer()
     if (!buffer->buf)
     {
         free(buffer);
+        return;
     }
-
-    printf("init ring buffer end\n");
-    //memset(buffer->buf, 0, DEFAULT_BUF_SIZE);
+    memset(buffer->buf, 0, DEFAULT_BUF_SIZE);
 }
 
 RingBuffer::~RingBuffer()
 {
-    printf("quit ring buffer\n");
     if(buffer) {
         free(buffer->buf);
+        buffer->buf = NULL;
         free(buffer);
+        buffer = NULL;
     }
 }
 
