@@ -489,7 +489,7 @@ void StartDefaultTask(void const * argument)
 
   if(read[30] != 0x55)//还未写入信息
   {
-    sprintf(read,"Xair LC6501B MCU version 0.1\n");
+    sprintf(read,"STM32 version 0.1\n");
     read[30] = 0x55;
     STMFLASH_Write((uint16_t)MESSAGE_ADDR,(uint8_t *)read,31);
     printf("write message\n");
