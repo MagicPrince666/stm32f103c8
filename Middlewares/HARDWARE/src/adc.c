@@ -25,7 +25,7 @@ void  Adc_Init(void)
 {    
 	//先初始化IO口
  	RCC->APB2ENR|=1<<3;    //使能PORTA口时钟 
-	GPIOB->CRL&=0XFFFFFF0F;//PB1 anolog输入
+	GPIOB->CRL&=0XFFFFFFF0;//PB1 anolog输入
 	//通道10/11设置			 
 	RCC->APB2ENR|=1<<9;    //ADC1时钟使能	  
 	RCC->APB2RSTR|=1<<9;   //ADC1复位
@@ -45,10 +45,16 @@ void  Adc_Init(void)
 	ADC1->CR2|=1<<23;      //使能温度传感器
 
 	ADC1->SQR1&=~(0XF<<20);
-	ADC1->SQR1|=0<<20;     //1个转换在规则序列中 也就是只转换规则序列1 			   
-	//设置通道1的采样时间
-	ADC1->SMPR2&=~(7<<27);  //通道9采样时间清空	  
- 	ADC1->SMPR2|=7<<27;     //通道9  239.5周期,提高采样时间可以提高精确度	 
+	ADC1->SQR1|=0<<20;     //1个转换在规则序列中 也就是只转换规则序列1 		
+		   
+#ifdef ADC_CH8
+	ADC1->SMPR2&=~(7<<3*8);  //通道8采样时间清空	  
+ 	ADC1->SMPR2|=7<<3*8;     //通道8  239.5周期,提高采样时间可以提高精确度	 
+#endif
+#ifdef ADC_CH9
+	ADC1->SMPR2&=~(7<<3*9);  //通道9采样时间清空	  
+ 	ADC1->SMPR2|=7<<3*9;     //通道9  239.5周期,提高采样时间可以提高精确度	 
+#endif
 
  	ADC1->SMPR1&=~(7<<18);  //清除通道16原来的设置	 
 	ADC1->SMPR1|=7<<18;     //通道16  239.5周期,提高采样时间可以提高精确度	 

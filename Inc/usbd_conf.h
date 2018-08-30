@@ -60,18 +60,6 @@
 #include "stm32f1xx_hal.h"
 #include "usbd_def.h"
 
-/** @addtogroup USBD_OTG_DRIVER
-  * @{
-  */
-  
-/** @defgroup USBD_CONF
-  * @brief usb otg low level driver configuration file
-  * @{
-  */ 
-
-/** @defgroup USBD_CONF_Exported_Defines
-  * @{
-  */ 
 
 /*---------- -----------*/
 #define USBD_MAX_NUM_INTERFACES     1
@@ -133,55 +121,12 @@ void USBD_static_free(void *p);
 #define USBD_DbgLog(...)                         
 #endif
                             
-/**
-  * @}
-  */ 
- 
-    
-    
-/**
-  * @}
-  */ 
 
-/** @defgroup USBD_CONF_Exported_Types
-  * @{
-  */ 
-/**
-  * @}
-  */ 
-
-/** @defgroup USBD_CONF_Exported_Macros
-  * @{
-  */ 
-/**
-  * @}
-  */ 
-
-/** @defgroup USBD_CONF_Exported_Variables
-  * @{
-  */ 
-/**
-  * @}
-  */ 
-
-/** @defgroup USBD_CONF_Exported_FunctionsPrototype
-  * @{
-  */ 
-/**
-  * @}
-  */ 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /*__USBD_CONF__H__*/
 
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-  */ 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 

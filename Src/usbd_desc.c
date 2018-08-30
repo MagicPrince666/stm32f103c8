@@ -52,51 +52,17 @@
 #include "usbd_desc.h"
 #include "usbd_conf.h"
 
-/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
-  * @{
-  */
 
-/** @defgroup USBD_DESC 
-  * @brief USBD descriptors module
-  * @{
-  */ 
-
-/** @defgroup USBD_DESC_Private_TypesDefinitions
-  * @{
-  */ 
-/**
-  * @}
-  */ 
-
-/** @defgroup USBD_DESC_Private_Defines
-  * @{
-  */ 
 #define USBD_VID     1155
 #define USBD_LANGID_STRING     1033
 #define USBD_MANUFACTURER_STRING     "XAG"
 #define USBD_PID_FS     22315
-#define USBD_PRODUCT_STRING_FS     "STM32 Human interface"
+#define USBD_PRODUCT_STRING_FS     "Human interface"
 #define USBD_SERIALNUMBER_STRING_FS     "00000000001A"
 #define USBD_CONFIGURATION_STRING_FS     "HID Config"
 #define USBD_INTERFACE_STRING_FS     "HID Interface"
 
-/* USER CODE BEGIN 0 */
 
-/* USER CODE END 0*/
-/**
-  * @}
-  */ 
-
-/** @defgroup USBD_DESC_Private_Macros
-  * @{
-  */ 
-/**
-  * @}
-  */ 
-
-/** @defgroup USBD_DESC_Private_Variables
-  * @{
-  */ 
 uint8_t *     USBD_FS_DeviceDescriptor( USBD_SpeedTypeDef speed , uint16_t *length);
 uint8_t *     USBD_FS_LangIDStrDescriptor( USBD_SpeedTypeDef speed , uint16_t *length);
 uint8_t *     USBD_FS_ManufacturerStrDescriptor ( USBD_SpeedTypeDef speed , uint16_t *length);
@@ -147,6 +113,34 @@ __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
   } ; 
 /* USB_DeviceDescriptor */
 
+const
+uint8_t CustomHID_ReportDescriptor[USB_LEN_DEV_DESC] =
+
+{
+        0x05, 0x8c, /* USAGE_PAGE (ST Page) */
+        0x09, 0x01, /* USAGE (Demo Kit) */
+        0xa1, 0x01, /* COLLECTION (Application) */
+
+        // The Input report
+        0x09,0x03, // USAGE ID - Vendor defined
+        0x15,0x00, // LOGICAL_MINIMUM (0)
+        0x26,0x00, 0xFF, // LOGICAL_MAXIMUM (255)
+        0x75,0x08, // REPORT_SIZE (8bit)
+        0x95,0x40, // REPORT_COUNT (64Byte)
+        0x81,0x02, // INPUT (Data,Var,Abs)
+
+        // The Output report
+        0x09,0x04, // USAGE ID - Vendor defined
+        0x15,0x00, // LOGICAL_MINIMUM (0)
+        0x26,0x00,0xFF, // LOGICAL_MAXIMUM (255)
+        0x75,0x08, // REPORT_SIZE (8bit)
+        0x95,0x40, // REPORT_COUNT (64Byte)
+        0x91,0x02, // OUTPUT (Data,Var,Abs)
+
+        0xc0 /* END_COLLECTION */
+
+}; /* CustomHID_ReportDescriptor */
+
 #if defined ( __ICCARM__ ) /*!< IAR Compiler */
   #pragma data_alignment=4   
 #endif
@@ -164,20 +158,7 @@ __ALIGN_BEGIN uint8_t USBD_LangIDDesc[USB_LEN_LANGID_STR_DESC] __ALIGN_END =
   #pragma data_alignment=4   
 #endif
 __ALIGN_BEGIN uint8_t USBD_StrDesc[USBD_MAX_STR_DESC_SIZ] __ALIGN_END;
-/**
-  * @}
-  */ 
 
-/** @defgroup USBD_DESC_Private_FunctionPrototypes
-  * @{
-  */ 
-/**
-  * @}
-  */ 
-
-/** @defgroup USBD_DESC_Private_Functions
-  * @{
-  */ 
 
 /**
 * @brief  USBD_FS_DeviceDescriptor 
@@ -297,16 +278,5 @@ uint8_t *  USBD_FS_InterfaceStrDescriptor( USBD_SpeedTypeDef speed , uint16_t *l
   }
   return USBD_StrDesc;  
 }
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-  */ 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

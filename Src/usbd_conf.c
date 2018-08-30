@@ -52,7 +52,7 @@
 #include "usbd_def.h"
 #include "usbd_core.h"
 #include "usbd_hid.h"
-//#include "stm32f1xx_hal_pcd.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/

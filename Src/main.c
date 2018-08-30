@@ -2,7 +2,8 @@
 #include "main.h"
 #include "stm32f1xx_hal.h"
 #include "cmsis_os.h"
-#include "usb_device.h"
+//#include "usb_device.h"
+#include "usb.h"
 #include "uart_process.h"
 #include "led.h"
 #include "usart.h"
@@ -481,6 +482,18 @@ static void MX_GPIO_Init(void)
 
 }
 
+u8 Buf[22];
+void USB_SendData(u8 *str)
+{
+	u8 len = 0;
+	while(*(str+len))
+		len++;
+	SetEpTxBuf(Buf,22,EP2);
+	SetEpTxBuf(str,len,EP2);
+	SetEP2TxCount(22);
+	SetEpTxStatus(EP2,EP_TX_VALID);
+}
+
 //#define MESSAGE_ADDR 0x08007800
 #define MESSAGE_ADDR 0x08007C00
 /* StartDefaultTask function */
@@ -502,34 +515,40 @@ void StartDefaultTask(void const * argument)
   read[30] = 0;
   printf("%s",read);
 */
-  Adc_Init();
-  MX_USB_DEVICE_Init();
+  //Adc_Init();
+  //MX_USB_DEVICE_Init();
+  USB_Config();
 
-  LED0 = 0;
-  LED1 = 0;
+  //LED0 = 0;
+  //LED1 = 1;
   LED2 = 0;
   LED3 = 1;
 
-  float power;
+  float power=5.1;
 
   for(;;)
   {
-    LED2 = ~LED2;
-    LED3 = ~LED3;
+    //LED0 = !LED0;
+    //LED1 = !LED1;
+    LED2 = !LED2;
+    LED3 = !LED3;
     osDelay(500);
+    
     i++;
     if(i%5 == 0)
     {
-      power=(Get_Adc(9)/1242.0)*2;
-      if(power<3.8)
-      {
-        LED2=!LED2;
-        LED3=!LED3;
-      }
-      printf("Voitage %.2fV\n",power);			
+      // power=(Get_Adc(8)/1242.0)*2;
+      // if(power<3.8)
+      // {
+      //   LED2=!LED2;
+      //   LED3=!LED3;
+      // }
+      USB_SendData("STM32 send buff\n");
+      //printf("send buf to host\n");			
       //printf("x: %.2f  y: %.2f  z: %.2f\n",Angle_ax,Angle_ay,Angle_az);
       //printf("task1 get adc:%d\n",Get_Adc(ADC_CH9));
     }
+    
   }
 }
 

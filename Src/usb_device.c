@@ -60,27 +60,13 @@ USBD_HandleTypeDef hUsbDeviceFS;
 /* init function */                                        
 void MX_USB_DEVICE_Init(void)
 {
-  /* USER CODE BEGIN USB_DEVICE_Init_PreTreatment */
-  
-  /* USER CODE END USB_DEVICE_Init_PreTreatment */
-  
+  RCC->APB1ENR |= (1 << 23);            /* enable clock for USB */
   /* Init Device Library,Add Supported Class and Start the library*/
   USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
 
   USBD_RegisterClass(&hUsbDeviceFS, &USBD_HID);
 
   USBD_Start(&hUsbDeviceFS);
-
-  /* USER CODE BEGIN USB_DEVICE_Init_PostTreatment */
-  
-  /* USER CODE END USB_DEVICE_Init_PostTreatment */
 }
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
