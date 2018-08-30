@@ -19,10 +19,8 @@ void LED_Init(void)
 {
 	RCC->APB2ENR |= 1<<3;    //使能PORTB时钟	   	 
 
-	GPIOB->CRH &= 0XFFFFFF00; 
-	GPIOB->CRH |= 0X00000033;  	 
-	GPIOB->CRL &= 0XFFF00FFF; 
-	GPIOB->CRL |= 0X00033000;   	 
-    GPIOB->ODR |= 3<<8|3<<3;      
+	GPIOB->CRH &= 0X0000FFFF; 
+	GPIOB->CRH |= 0X33330000;  	 	 
+    GPIOB->ODR |= 0xf<<12;      
 }
 

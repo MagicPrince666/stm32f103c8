@@ -2,11 +2,13 @@
 #include "main.h"
 #include "stm32f1xx_hal.h"
 #include "cmsis_os.h"
+#include "usb_device.h"
 #include "uart_process.h"
 #include "led.h"
 #include "usart.h"
 #include "stmflash.h"
 #include "adc.h"
+
 
 
 /* Private variables ---------------------------------------------------------*/
@@ -70,8 +72,8 @@ int main(void)
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-  osThreadDef(Uart_RecvBuffTask, Uart_RecvBuffTask, osPriorityNormal, 0, 256);
-  Uart_RecvBuffTaskHandle = osThreadCreate(osThread(Uart_RecvBuffTask),NULL);
+  //osThreadDef(Uart_RecvBuffTask, Uart_RecvBuffTask, osPriorityNormal, 0, 256);
+  //Uart_RecvBuffTaskHandle = osThreadCreate(osThread(Uart_RecvBuffTask),NULL);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
 
@@ -121,8 +123,10 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_USB;
   PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
+  PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -499,7 +503,10 @@ void StartDefaultTask(void const * argument)
   printf("%s",read);
 */
   Adc_Init();
+  MX_USB_DEVICE_Init();
 
+  LED0 = 0;
+  LED1 = 0;
   LED2 = 0;
   LED3 = 1;
 
