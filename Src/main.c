@@ -525,11 +525,24 @@ void StartDefaultTask(void const * argument)
   LED3 = 1;
 
   float power=5.1;
+  u8 str[64];
+  u16 len = 0;
 
   for(;;)
   {
     //LED0 = !LED0;
     //LED1 = !LED1;
+    Clr_CTR_Rx(EP1);
+    GetEpRxBuf(str,EP1);
+    if(str[0])
+    {
+      //len = GetEP1TxCount();
+      //str[len] = 0;
+      printf("%s\n",str);
+      //str[0] = 0;
+      memset(str,0,sizeof(str));
+      SetEpRxStatus(EP1,EP_RX_VALID);
+    }
     LED2 = !LED2;
     LED3 = !LED3;
     osDelay(500);

@@ -27,10 +27,10 @@ u8 Device_Descriptor[18] =
 	0x00,	/* 子设备类 */
 	0x00,	/* 设备协议 */
 	0x40,	/* 端点0包的最大长度(字节) */
-	0x83,	/* 厂商ID(0x0483) */
-	0x04,
-	0x50,	/* 产品ID(0x5750) */
-	0x57,
+	0x01,	/* 厂商ID(0x0483) */
+	0x3a,
+	0x01,	/* 产品ID(0x5750) */
+	0x3a,
 	0x00,	/*bcdDevice rel. 2.00*/
 	0x02,
 	0x01,	/* 描述厂商的字符串索引 */
@@ -119,10 +119,10 @@ u8 Interface_Descriptor[9] = {0x09,0x04,0x00,0x00,0x02,0x08,0x06,0x50,0x01};
 u8 Ep1_Descriptor[7] = {0x07,0x05,0x81,0x02,0x40,0x00,0x00};
 u8 Ep2_Descriptor[7] = {0x07,0x05,0x02,0x02,0x40,0x00,0x00};
 u8 StringLangID[4] = {0x04,0x03,0x09,0x04};/*语言ID*/
-u8 StringVendor[38] = {0x26,0x03,'S',0,'T',0,'M',0,'i',0,'c',0,'r',0,'o',0,'e',0,'l',0,'e',0,'c',0,'t',0,'r',0,'o',0,'n',0,'i',0,'c',0,'s',0};/*厂商描述符*/
-u8 StringProduct[18] = {0x12,0x03,'U', 0, 'S', 0, 'B', 0,' ',0, 'T', 0, 'e', 0, 's', 0, 't',0};/*产品描述符*/
-u8 StringSerial[16] = {0x10,0x03,'S', 0, 'T', 0, 'M', 0, '3', 0, '2', 0, '1', 0, '0', 0}; /*序列号描述符*/
-u8 StringInterface[16] ={0x10, 0x03, 'S', 0, 'T', 0, ' ', 0, 'M', 0, 'a', 0, 's', 0, 's', 0}; /*接口描述符*/
+u8 StringVendor[38] = {0x26,0x03,'X',0,'A',0,'G',0,'i',0,'c',0,'r',0,'o',0,'e',0,'l',0,'e',0,'c',0,'t',0,'r',0,'o',0,'n',0,'i',0,'c',0,'s',0};/*厂商描述符*/
+u8 StringProduct[18] = {0x12,0x03,'U', 0, 'S', 0, 'B', 0,' ',0, '3', 0, 'a', 0, '0', 0, '1',0};/*产品描述符*/
+u8 StringSerial[16] = {0x10,0x03,'X', 0, 'A', 0, 'G', 0, '3', 0, 'a', 0, '0', 0, '1', 0}; /*序列号描述符*/
+u8 StringInterface[16] ={0x10, 0x03, 'X', 0, 'A', 0, 'G', 0, ' ', 0, 'h', 0, 'i', 0, 'd', 0}; /*接口描述符*/
 void RESET_CallBack(void) /*复位中断处理*/
 {
 	Flag = 0;
@@ -515,9 +515,11 @@ void USB_Config(void)
 	// NVIC_Init(&NVIC_InitStructure);	 
 
 	RCC->APB1ENR |= (1 << 23);            /* enable clock for USB */
-	USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
-  	USBD_RegisterClass(&hUsbDeviceFS, &USBD_HID);
-  	USBD_Start(&hUsbDeviceFS);
+	MY_NVIC_Init(1,1,USB_LP_CAN1_RX0_IRQn,1);//组2，最低优先级 
+	MY_NVIC_Init(1,0,USB_HP_CAN1_TX_IRQn,1);//组2，最低优先级 
+	//USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
+  	//USBD_RegisterClass(&hUsbDeviceFS, &USBD_HID);
+  	//USBD_Start(&hUsbDeviceFS);
 
 	SetCNTR(0xF400);
 }

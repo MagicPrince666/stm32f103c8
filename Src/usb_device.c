@@ -60,7 +60,7 @@ USBD_HandleTypeDef hUsbDeviceFS;
 /* init function */                                        
 void MX_USB_DEVICE_Init(void)
 {
-  RCC->APB1ENR |= (1 << 23);            /* enable clock for USB */
+  //RCC->APB1ENR |= (1 << 23);            /* enable clock for USB */
   /* Init Device Library,Add Supported Class and Start the library*/
   USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
 
