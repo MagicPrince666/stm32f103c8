@@ -1,4 +1,4 @@
-#include "ringbuffer.h"
+//#include "ringbuffer.h"
 #include "uart_process.h"
 #include "line.h"
 
@@ -10,6 +10,7 @@ extern "C"
 #include "24l01.h"
 #include "mpu6050.h"
 #include "stmflash.h"
+#include "usart2.h"
 }
 
 /*
@@ -56,7 +57,7 @@ void DMA1_Channel5_IRQHandler(void)
   }
 }
 
-extern cycle_buffer* buffer;
+//extern cycle_buffer* buffer;
 /* uart数据接收任务 */
 void Uart_RecvBuffTask(void const * argument)
 {
@@ -66,7 +67,7 @@ void Uart_RecvBuffTask(void const * argument)
     
     MYDMA_uart_rx_conf(UART1_RXDMA_CHN,(uint32_t)&USART1->DR,(uint32_t)(RECV1.recvbuf),Recv1_LEN);
 
-    RingBuffer ring;
+    //RingBuffer ring;
 
 
     TIM1_PWM_Init(1000,71);
@@ -76,7 +77,7 @@ void Uart_RecvBuffTask(void const * argument)
     PWM2_VAL = 0;
     PWM3_VAL = 0;
     PWM4_VAL = 0;
-
+/*
     int res = 0;
     NRF24L01_Init();    	
 	while(NRF24L01_Check())		
@@ -89,7 +90,7 @@ void Uart_RecvBuffTask(void const * argument)
 	RxBuf[2] = 128;
 	RxBuf[3] = 128;
 	RxBuf[4] = 0;
-
+*/
     //MPU_Init();
     //IAPRead();
     
@@ -110,12 +111,12 @@ void Uart_RecvBuffTask(void const * argument)
             {       
                 RECV1.flag = 1;                                     //切换至第二缓存标志
                 RECV1.recvbuf[recv_cnt] = 0;
-                ring.write(buffer,RECV1.recvbuf,recv_cnt);
+                //ring.write(buffer,RECV1.recvbuf,recv_cnt);
                 Start_UART_DMA_Transmit(UART1_RXDMA_CHN,Recv1_LEN); //开始接收
                 printf("uart1:%s\n",RECV1.recvbuf);
             }
         }
-
+/*
        if(NRF24L01_RxPacket(RxBuf)==0)//
 		{
 			if(RxBuf[5] == 1)	//
@@ -142,23 +143,24 @@ void Uart_RecvBuffTask(void const * argument)
 				}
 			}
 	    }	
-
+*/
         i++;
         if(i >= 30)
         {
             i = 0;
-            LED0 = ~LED0;
-            LED1 = ~LED1;
-            
+            /*
             //unsigned char readbuf[64];
             if(ring.read(buffer,readbuf,DEFAULT_BUF_SIZE))
             {
                 readbuf[Recv1_LEN] = 0;
                 printf("%s",readbuf);
             }
-            
+            */       
         }
+        LED0 = ~LED0;
+        LED1 = ~LED1;
+        u2_printf("reset uart transmit %d\n",i);
         //PWM4_VAL = i*30;
-        osDelay(10);//任务延时 会影响系统调度
+        osDelay(500);//任务延时 会影响系统调度
     }
 }

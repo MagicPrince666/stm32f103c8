@@ -99,6 +99,7 @@ Middlewares/HARDWARE/src/24l01.c \
 Middlewares/HARDWARE/src/timer.c \
 Middlewares/HARDWARE/src/stmflash.c \
 Middlewares/HARDWARE/src/myiic.c \
+Middlewares/HARDWARE/src/usart2.c \
 Middlewares/MPU6050/mpu6050.c \
 Middlewares/MPU6050/imu.c \
 Middlewares/MPU6050/eMPL/inv_mpu_dmp_motion_driver.c \

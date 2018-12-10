@@ -7,6 +7,7 @@
 #include "uart_process.h"
 #include "led.h"
 #include "usart.h"
+#include "usart2.h"
 #include "stmflash.h"
 #include "adc.h"
 
@@ -69,12 +70,14 @@ int main(void)
   JTAG_Set(SWD_ENABLE);
   LED_Init();
   uart_init(72,115200);
+  usart2_init(36,115200);
+  printf("STM32 F103C8T6\n");	
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-  //osThreadDef(Uart_RecvBuffTask, Uart_RecvBuffTask, osPriorityNormal, 0, 256);
-  //Uart_RecvBuffTaskHandle = osThreadCreate(osThread(Uart_RecvBuffTask),NULL);
+  osThreadDef(Uart_RecvBuffTask, Uart_RecvBuffTask, osPriorityNormal, 0, 256);
+  Uart_RecvBuffTaskHandle = osThreadCreate(osThread(Uart_RecvBuffTask),NULL);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
 
@@ -519,8 +522,8 @@ void StartDefaultTask(void const * argument)
   //MX_USB_DEVICE_Init();
   USB_Config();
 
-  //LED0 = 0;
-  //LED1 = 1;
+  LED0 = 0;
+  LED1 = 1;
   LED2 = 0;
   LED3 = 1;
 
@@ -543,11 +546,21 @@ void StartDefaultTask(void const * argument)
       memset(str,0,sizeof(str));
       SetEpRxStatus(EP1,EP_RX_VALID);
     }
+
+  //  LED0 = !LED0;
+  //  LED1 = !LED1;
     LED2 = !LED2;
     LED3 = !LED3;
     osDelay(500);
     
     i++;
+    // if(i > 0xf)
+    // {
+    //   GPIOB->ODR &= 0x0000FFFF;
+    //   GPIOB->ODR |= i<<12 & 0x00FF;
+    //   i = 0;
+    // }
+    printf("rest uart transmit %d\n",i);
     if(i%5 == 0)
     {
       // power=(Get_Adc(8)/1242.0)*2;
@@ -556,7 +569,7 @@ void StartDefaultTask(void const * argument)
       //   LED2=!LED2;
       //   LED3=!LED3;
       // }
-      USB_SendData("STM32 send buff\n");
+      //USB_SendData("STM32 send buff\n");
       //printf("send buf to host\n");			
       //printf("x: %.2f  y: %.2f  z: %.2f\n",Angle_ax,Angle_ay,Angle_az);
       //printf("task1 get adc:%d\n",Get_Adc(ADC_CH9));

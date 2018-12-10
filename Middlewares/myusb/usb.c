@@ -493,33 +493,11 @@ void CTR_CallBack(void) /*完成一次正确传输中断*/
 }
 void USB_Config(void)
 {
-	// NVIC_InitTypeDef NVIC_InitStructure;  
-
-	// RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO , ENABLE);
 	// RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
-	// RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);	
-		
-
-	// NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
-				  			
-	// NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;	    //USB低优先级中断请求
-	// NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;			//抢占优先级 1
-	// NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;				//子优先级为1
-	// NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	// NVIC_Init(&NVIC_InitStructure);
-				  
-	// NVIC_InitStructure.NVIC_IRQChannel = USB_HP_CAN1_TX_IRQn;			//USB高优先级中断请求
-	// NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;			//抢占优先级 1
-	// NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;				//子优先级为0
-	// NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	// NVIC_Init(&NVIC_InitStructure);	 
-
+	RCC->APB2ENR |= 1 << 0;//AFIO EN
 	RCC->APB1ENR |= (1 << 23);            /* enable clock for USB */
-	MY_NVIC_Init(1,1,USB_LP_CAN1_RX0_IRQn,1);//组2，最低优先级 
-	MY_NVIC_Init(1,0,USB_HP_CAN1_TX_IRQn,1);//组2，最低优先级 
-	//USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
-  	//USBD_RegisterClass(&hUsbDeviceFS, &USBD_HID);
-  	//USBD_Start(&hUsbDeviceFS);
+	MY_NVIC_Init(1,1,USB_LP_CAN1_RX0_IRQn,1); 
+	MY_NVIC_Init(1,0,USB_HP_CAN1_TX_IRQn,1); 
 
 	SetCNTR(0xF400);
 }

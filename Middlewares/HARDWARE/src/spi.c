@@ -18,11 +18,11 @@
 void SPI1_Init(void)
 {	 
 	RCC->APB2ENR|=1<<2;  	//PORTB时钟使能 	 
-	RCC->APB2ENR|=1<<12;   	//SPI2时钟使能 
+	RCC->APB2ENR|=1<<12;   	//SPI1时钟使能 
 	//这里只针对SPI口初始化
 	GPIOA->CRL&=0X000FFFFF; 
-	GPIOA->CRL|=0XBBB00000;	//PB13/14/15复用 	    
-	GPIOA->ODR|=0X7<<5;   	//PB13/14/15上拉
+	GPIOA->CRL|=0XBBB00000;	//PA5/6/7复用 	    
+	GPIOA->ODR|=0X7<<5;   	//PA5/6/7上拉
 	SPI1->CR1|=0<<10;		//全双工模式	
 	SPI1->CR1|=1<<9; 		//软件nss管理
 	SPI1->CR1|=1<<8;  

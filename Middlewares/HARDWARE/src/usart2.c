@@ -21,7 +21,7 @@ void usart2_init(u32 pclk2,u32 bound)
 	temp=(float)(pclk2*1000000)/(bound*16);//得到USARTDIV
 	mantissa=temp;				 //得到整数部分
 	fraction=(temp-mantissa)*16; //得到小数部分	 
-  mantissa<<=4;
+  	mantissa<<=4;
 	mantissa+=fraction; 
 	RCC->APB2ENR|=1<<2;   //使能PORTA口时钟  
 	RCC->APB1ENR|=1<<17;  //使能串口时钟 
@@ -37,8 +37,8 @@ void usart2_init(u32 pclk2,u32 bound)
 	USART2->CR1|=1<<8;    //PE中断使能
 	USART2->CR1|=1<<5;    //接收缓冲区非空中断使能	    	
 	MY_NVIC_Init(2,3,USART2_IRQn,2);//组2，最低优先级 
-	TIM6_Int_Init(1000-1,7200-1);	//100ms中断
-	TIM6->CR1&=~(1<<0);		//关闭定时器7
+	//TIM6_Int_Init(1000-1,7200-1);	//100ms中断
+	//TIM6->CR1&=~(1<<0);		//关闭定时器7
 	USART2_RX_STA=0;		//清零
 }
 //通过判断接收连续2个字符之间的时间差不大于10ms来决定是不是一次连续的数据.
@@ -58,10 +58,10 @@ void USART2_IRQHandler(void)
 		{ 
 			if(USART2_RX_STA<USART2_MAX_RECV_LEN)	//还可以接收数据
 			{
-				TIM6->CNT=0;         				//计数器清空
+				//TIM6->CNT=0;         				//计数器清空
 				if(USART2_RX_STA==0) 				//使能定时器7的中断 
 				{
-					TIM6->CR1|=1<<0;     			//使能定时器7
+					//TIM6->CR1|=1<<0;     			//使能定时器7
 				}
 				USART2_RX_BUF[USART2_RX_STA++]=res;	//记录接收到的值	 
 			}else 
