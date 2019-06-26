@@ -11,6 +11,7 @@ extern "C"
 #include "mpu6050.h"
 #include "stmflash.h"
 #include "usart2.h"
+#include "adc.h"
 }
 
 /*
@@ -70,13 +71,13 @@ void Uart_RecvBuffTask(void const * argument)
     //RingBuffer ring;
 
 
-    TIM1_PWM_Init(1000,71);
-    TIM2_PWM_Init(1000,71);
+    //TIM1_PWM_Init(1000,71);
+    //TIM2_PWM_Init(1000,71);
 
-    PWM1_VAL = 0;
-    PWM2_VAL = 0;
-    PWM3_VAL = 0;
-    PWM4_VAL = 0;
+    //PWM1_VAL = 0;
+    //PWM2_VAL = 0;
+    //PWM3_VAL = 0;
+    //PWM4_VAL = 0;
 /*
     int res = 0;
     NRF24L01_Init();    	
@@ -93,6 +94,7 @@ void Uart_RecvBuffTask(void const * argument)
 */
     //MPU_Init();
     //IAPRead();
+    Adc_Init();
     
     LED0 = 0;
     LED1 = 1;
@@ -113,7 +115,7 @@ void Uart_RecvBuffTask(void const * argument)
                 RECV1.recvbuf[recv_cnt] = 0;
                 //ring.write(buffer,RECV1.recvbuf,recv_cnt);
                 Start_UART_DMA_Transmit(UART1_RXDMA_CHN,Recv1_LEN); //开始接收
-                printf("uart1:%s\n",RECV1.recvbuf);
+                printf("uart1:%s\r\n",RECV1.recvbuf);
             }
         }
 /*
@@ -159,7 +161,10 @@ void Uart_RecvBuffTask(void const * argument)
         }
         LED0 = ~LED0;
         LED1 = ~LED1;
-        u2_printf("reset uart transmit %d\n",i);
+        printf("get adc4 = %d\r\n",Get_Adc(4));
+        //printf("get adc5 = %d\r\n",Get_Adc(5));
+        //u2_printf("get adc4 = %d\n",Get_Adc(4));
+        //u2_printf("get adc5 = %d\n",Get_Adc(5));
         //PWM4_VAL = i*30;
         osDelay(500);//任务延时 会影响系统调度
     }

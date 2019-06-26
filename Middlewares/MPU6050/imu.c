@@ -1,6 +1,6 @@
 #include <math.h>
 #include "sys.h"
-#include "IMU.H"
+#include "imu.h"
 
 
 #define	pi		3.14159265f                           
@@ -19,15 +19,15 @@ void IMUupdate(float gx, float gy, float gz, float ax, float ay, float az)
 	float q0=1,q1=0,q2=0,q3=0;   
     float exInt=0,eyInt=0,ezInt=0; 
 
-	norm = sqrt(ax*ax + ay*ay + az*az);	//°Ñ¼ÓËÙ¶È¼ÆµÄÈýÎ¬ÏòÁ¿×ª³Éµ¥Î¬ÏòÁ¿   
+	norm = sqrt(ax*ax + ay*ay + az*az);	//ï¿½Ñ¼ï¿½ï¿½Ù¶È¼Æµï¿½ï¿½ï¿½Î¬ï¿½ï¿½ï¿½ï¿½×ªï¿½Éµï¿½Î¬ï¿½ï¿½ï¿½ï¿½   
 	ax = ax / norm;
 	ay = ay / norm;
 	az = az / norm;
 
-		//	ÏÂÃæÊÇ°ÑËÄÔªÊý»»Ëã³É¡¶·½ÏòÓàÏÒ¾ØÕó¡·ÖÐµÄµÚÈýÁÐµÄÈý¸öÔªËØ¡£ 
-		//	¸ù¾ÝÓàÏÒ¾ØÕóºÍÅ·À­½ÇµÄ¶¨Òå£¬µØÀí×ø±êÏµµÄÖØÁ¦ÏòÁ¿£¬×ªµ½»úÌå×ø±êÏµ£¬ÕýºÃÊÇÕâÈý¸öÔªËØ
-		//	ËùÒÔÕâÀïµÄvx vy vz£¬ÆäÊµ¾ÍÊÇµ±Ç°µÄÅ·À­½Ç£¨¼´ËÄÔªÊý£©µÄ»úÌå×ø±ê²ÎÕÕÏµÉÏ£¬»»Ëã³öÀ´µÄ
-		//	ÖØÁ¦µ¥Î»ÏòÁ¿¡£
+		//	ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¾ï¿½ï¿½ï¿½ï¿½ÐµÄµï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½Ø¡ï¿½ 
+		//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¾ï¿½ï¿½ï¿½ï¿½Å·ï¿½ï¿½ï¿½ÇµÄ¶ï¿½ï¿½å£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
+		//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vx vy vzï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½Çµï¿½Ç°ï¿½ï¿½Å·ï¿½ï¿½ï¿½Ç£ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½Ï£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	vx = 2*(q1*q3 - q0*q2);
 	vy = 2*(q0*q1 + q2*q3);
 	vz = q0*q0 - q1*q1 - q2*q2 + q3*q3 ;
@@ -55,7 +55,7 @@ void IMUupdate(float gx, float gy, float gz, float ax, float ay, float az)
 	q2 = q2 / norm;
 	q3 = q3 / norm;
 
-	Angle  = asin(2*(q0*q2 - q1*q3 )) * 57.2957795f; // ¸©Ñö   »»Ëã³É¶È
-	Angley = asin(2*(q0*q1 + q2*q3 )) * 57.2957795f; // ºá¹ö
+	Angle  = asin(2*(q0*q2 - q1*q3 )) * 57.2957795f; // ï¿½ï¿½ï¿½ï¿½   ï¿½ï¿½ï¿½ï¿½É¶ï¿½
+	Angley = asin(2*(q0*q1 + q2*q3 )) * 57.2957795f; // ï¿½ï¿½ï¿½
 }
 

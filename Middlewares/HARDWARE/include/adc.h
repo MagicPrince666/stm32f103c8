@@ -20,7 +20,8 @@
 ////////////////////////////////////////////////////////////////////////////////// 
 
 							  	 	    
-#define ADC_CH8  		  		//通道1		 
+#define ADC_CH4  		  		//通道4	
+#define ADC_CH5  		  		//通道5	 
 #define ADC_CH_TEMP  	16 		//温度传感器通道
 
 void Adc_Init(void); 				//ADC通道初始化

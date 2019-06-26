@@ -560,7 +560,7 @@ void StartDefaultTask(void const * argument)
     //   GPIOB->ODR |= i<<12 & 0x00FF;
     //   i = 0;
     // }
-    printf("rest uart transmit %d\n",i);
+    //printf("rest uart transmit %d\r\n",i);
     if(i%5 == 0)
     {
       // power=(Get_Adc(8)/1242.0)*2;
