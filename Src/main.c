@@ -10,7 +10,7 @@
 #include "usart2.h"
 #include "stmflash.h"
 #include "adc.h"
-
+#include "MFRC_Task.h"
 
 
 /* Private variables ---------------------------------------------------------*/
@@ -520,13 +520,16 @@ void StartDefaultTask(void const * argument)
 */
   //Adc_Init();
   //MX_USB_DEVICE_Init();
-  USB_Config();
+  //USB_Config();
 
   LED0 = 0;
   LED1 = 1;
   LED2 = 0;
   LED3 = 1;
 
+  MFRC_main();
+
+#if 0
   float power=5.1;
   u8 str[64];
   u16 len = 0;
@@ -544,7 +547,7 @@ void StartDefaultTask(void const * argument)
       printf("%s\n",str);
       //str[0] = 0;
       memset(str,0,sizeof(str));
-      SetEpRxStatus(EP1,EP_RX_VALID);
+      SetEpRxStatus(EP1, EP_RX_VALID);
     }
 
   //  LED0 = !LED0;
@@ -576,6 +579,7 @@ void StartDefaultTask(void const * argument)
     }
     
   }
+#endif
 }
 
 void _Error_Handler(char * file, int line)

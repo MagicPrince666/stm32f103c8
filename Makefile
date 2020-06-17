@@ -106,6 +106,8 @@ Middlewares/MPU6050/eMPL/inv_mpu_dmp_motion_driver.c \
 Middlewares/MPU6050/eMPL/inv_mpu.c \
 Middlewares/myusb/usb_it.c \
 Middlewares/myusb/usb.c \
+Middlewares/RC522/MFRC_Task.c \
+Middlewares/RC522/RC522.c \
 Src/usbd_conf.c \
 Src/usb_device.c \
 Src/usbd_desc.c \
@@ -197,6 +199,7 @@ C_INCLUDES =  \
 -IMiddlewares/MPU6050 \
 -IMiddlewares/MPU6050/eMPL \
 -IMiddlewares/myusb \
+-IMiddlewares/RC522/include \
 -IDrivers/CMSIS/Include
 
 CXX_INCLUDES =  \
