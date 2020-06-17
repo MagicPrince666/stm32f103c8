@@ -11,8 +11,8 @@
 
 #define     MF522_SDA  	 PBout(6)       //SDA
 #define     MF522_SCK    PBout(3)       //SCK
-#define     MF522_MOSI   PBout(4)       //MOSI
-#define     MF522_MISO   PBout(5)       //MISO
+#define     MF522_MOSI   PBout(5)       //MOSI
+#define     MF522_MISO   PBout(4)       //MISO
 #define     MF522_RST    PBout(7)       //RST
 //指示灯
 #define     LED_GREEN   LED0
