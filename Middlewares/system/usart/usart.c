@@ -11,8 +11,8 @@ int _write (int fd, char *pBuffer, int size)
 {  
 	for (int i = 0; i < size; i++)  
 	{  
-		while((USART1->SR&0X40)==0);//等待上一次串口数据发送完成  
-		USART1->DR = (u8) pBuffer[i];      	//写DR,串口1将发送数据 
+		while((UART5->SR&0X40)==0);//等待上一次串口数据发送完成  
+		UART5->DR = (u8) pBuffer[i];      	//写DR,串口1将发送数据 
 	}  
 	return size;  
 } 
@@ -70,11 +70,21 @@ void uart_init(u32 pclk2,u32 bound)
 	mantissa=temp;				 //得到整数部分
 	fraction=(temp-mantissa)*16; //得到小数部分	 
     mantissa<<=4;
-	mantissa+=fraction; 
-	RCC->APB2ENR|=1<<2;   //使能PORTA口时钟  
-	RCC->APB2ENR|=1<<14;  //使能串口时钟 
+	mantissa+=fraction;
+#if 1
+	// PA9 - TX PA10 - RX
+	RCC->APB2ENR|=1<<2;   //使能PORTA口时钟
 	GPIOA->CRH&=0XFFFFF00F;//IO状态设置
 	GPIOA->CRH|=0X000008B0;//IO状态设置 
+#else
+	// PC12 - UART5_TX PD2 - UART5_RX
+	RCC->APB2ENR |= 1<<4 | 1<<5;   //使能PORTC D口时钟  
+	GPIOC->CRH &= 0XFFF0FFFF;//IO状态设置
+	GPIOC->CRH |= 0X000B0000;//IO状态设置 
+	GPIOD->CRL &= 0XFFFFF0FF;//IO状态设置
+	GPIOD->CRL |= 0X00000800;//IO状态设置 
+#endif
+	RCC->APB2ENR|=1<<14;  //使能串口时钟 
 	RCC->APB2RSTR|=1<<14;   //复位串口1
 	RCC->APB2RSTR&=~(1<<14);//停止复位	   	   
 	//波特率设置

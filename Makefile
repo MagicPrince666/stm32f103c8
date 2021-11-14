@@ -95,11 +95,12 @@ Middlewares/HARDWARE/src/dma.c \
 Middlewares/HARDWARE/src/led.c \
 Middlewares/HARDWARE/src/adc.c \
 Middlewares/HARDWARE/src/spi.c \
+Middlewares/HARDWARE/src/pstwo.c \
 Middlewares/HARDWARE/src/24l01.c \
 Middlewares/HARDWARE/src/timer.c \
 Middlewares/HARDWARE/src/stmflash.c \
 Middlewares/HARDWARE/src/myiic.c \
-Middlewares/HARDWARE/src/usart2.c \
+Middlewares/HARDWARE/src/uart5.c \
 Middlewares/MPU6050/mpu6050.c \
 Middlewares/MPU6050/imu.c \
 Middlewares/MPU6050/eMPL/inv_mpu_dmp_motion_driver.c \
@@ -171,7 +172,7 @@ AS_DEFS =
 # C defines
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
--DSTM32F103xB
+-DSTM32F103xE
 
 # C++ defines
 CXX_DEFS =

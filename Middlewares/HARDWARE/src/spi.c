@@ -17,7 +17,7 @@
 //这里针是对SPI1的初始化
 void SPI1_Init(void)
 {	 
-	RCC->APB2ENR|=1<<2;  	//PORTB时钟使能 	 
+	RCC->APB2ENR|=1<<2;  	//PORTA时钟使能 	 
 	RCC->APB2ENR|=1<<12;   	//SPI1时钟使能 
 	//这里只针对SPI口初始化
 	GPIOA->CRL&=0X000FFFFF; 
@@ -45,7 +45,7 @@ void SPI1_SetSpeed(u8 SpeedSet)
 {
 	SpeedSet&=0X07;			//限制范围
 	SPI1->CR1&=0XFFC7; 
-	SPI1->CR1|=SpeedSet<<3;	//设置SPI2速度  
+	SPI1->CR1|=SpeedSet<<3;	//设置SPI1速度  
 	SPI1->CR1|=1<<6; 		//SPI设备使能	
 } 
 //SPI1 读写一个字节

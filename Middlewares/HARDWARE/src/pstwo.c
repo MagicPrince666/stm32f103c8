@@ -1,5 +1,6 @@
 #include "pstwo.h"
 #include "usart.h"
+#include "spi.h"
 /*********************************************************
 Copyright (C), 2015-2025, YFRobot.
 www.yfrobot.com
@@ -7,6 +8,8 @@ File：PS2驱动程序
 Author：pinggai    Version:1.0     Data:2015/05/16
 Description: PS2驱动程序
 **********************************************************/	 
+
+#define _USE_SPI 0
 
 u16 Handkey;
 u8 Comd[2]={0x01,0x42};	//开始命令。请求数据
@@ -35,15 +38,28 @@ u16 MASK[]={
 //                  输出  DO->PC1    CS->PC3  CLK->PC2
 void PS2_Init(void)
 {
-  RCC->APB2ENR|=1<<4;//先使能外设PORTC时钟    	
-	GPIOC->CRL&=0XFFF00000;
-	GPIOC->CRL|=0X00083338;     
-	GPIOC->ODR|=0x1f<<0;  											  
+#if _USE_SPI
+	SPI1_Init();
+	SPI2_SetSpeed(SPI_SPEED_64); // 72/8 = 9
+#else
+	RCC->APB2ENR |= 1<<4 | 1 << 2;//先使能外设PORTC时钟
+	GPIOC->CRL &= 0XFFFFF0FF;
+	GPIOC->CRL |= 0X00000300;
+	GPIOC->ODR |= 0x1<<2;
+	GPIOA->CRL &= 0X000FFFFF;
+	GPIOA->CRL |= 0X38300000;
+	GPIOA->ODR |= 0x7<<5;
+#endif									  
 }
 
 //向手柄发送命令
 void PS2_Cmd(u8 CMD)
 {
+#if _USE_SPI
+	PS2_JOYPAD_ATT = 0;
+	SPI1_ReadWriteByte(CMD);
+	PS2_JOYPAD_ATT = 1;
+#else
 	volatile u16 ref=0x01;
 	Data[1] = 0;
 	for(ref=0x01;ref<0x0100;ref<<=1)
@@ -63,13 +79,13 @@ void PS2_Cmd(u8 CMD)
 			Data[1] = ref|Data[1];
 	}
 	delay_us(16);
+#endif
 }
 //判断是否为红灯模式
 //返回值；0，红灯模式
 //		  其他，其他模式
 u8 PS2_RedLight(void)
 {
-	PS2_JOYPAD_ATT = 0;
 	PS2_Cmd(Comd[0]);  //开始命令
 	PS2_Cmd(Comd[1]);  //请求数据
 	PS2_JOYPAD_ATT = 1;
@@ -87,7 +103,12 @@ void PS2_ReadData(void)
 
 	PS2_Cmd(Comd[0]);  //开始命令
 	PS2_Cmd(Comd[1]);  //请求数据
-
+#if _USE_SPI
+	for(byte=2;byte<9;byte++)          //开始接受数据
+	{
+		Data[byte] = SPI1_ReadWriteByte(0);
+	}
+#else
 	for(byte=2;byte<9;byte++)          //开始接受数据
 	{
 		for(ref=0x01;ref<0x100;ref<<=1)
@@ -102,6 +123,7 @@ void PS2_ReadData(void)
 		}
         delay_us(16);
 	}
+#endif
 	PS2_JOYPAD_ATT = 1;	
 }
 
@@ -149,7 +171,7 @@ void PS2_Vibration(u8 motor1, u8 motor2)
 {
 	PS2_JOYPAD_ATT = 0;
 	delay_us(16);
-  PS2_Cmd(0x01);  //开始命令
+	PS2_Cmd(0x01);  //开始命令
 	PS2_Cmd(0x42);  //请求数据
 	PS2_Cmd(0X00);
 	PS2_Cmd(motor1);
@@ -177,7 +199,7 @@ void PS2_ShortPoll(void)
 //进入配置
 void PS2_EnterConfing(void)
 {
-  PS2_JOYPAD_ATT = 0;
+	PS2_JOYPAD_ATT = 0;
 	delay_us(16);
 	PS2_Cmd(0x01);  
 	PS2_Cmd(0x43);  

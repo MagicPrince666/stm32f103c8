@@ -9,10 +9,10 @@ File：PS2驱动程序
 Author：pinggai    Version:1.0     Data:2015/05/16
 Description: PS2驱动程序
 **********************************************************/	 
-#define PS2_JOYPAD_DATA   PCin(0)           //PB12  输入
-#define PS2_JOYPAD_CMND PCout(1)       //命令位高
-#define PS2_JOYPAD_ATT PCout(3)       //CS拉高
-#define PS2_JOYPAD_CLOCK PCout(2)      //时钟拉高
+#define PS2_JOYPAD_DATA     PAin(6)           //PB12  输入
+#define PS2_JOYPAD_CMND     PAout(7)       //命令位高
+#define PS2_JOYPAD_ATT      PCout(2)       //CS拉高
+#define PS2_JOYPAD_CLOCK    PAout(5)      //时钟拉高
 
 
 //These are our button constants

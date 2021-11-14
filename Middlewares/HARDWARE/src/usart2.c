@@ -22,7 +22,8 @@ void usart2_init(u32 pclk2,u32 bound)
 	mantissa=temp;				 //得到整数部分
 	fraction=(temp-mantissa)*16; //得到小数部分	 
   	mantissa<<=4;
-	mantissa+=fraction; 
+	mantissa+=fraction;
+
 	RCC->APB2ENR|=1<<2;   //使能PORTA口时钟  
 	RCC->APB1ENR|=1<<17;  //使能串口时钟 
 	GPIOA->CRL&=0XFFFF00FF;//IO状态设置
