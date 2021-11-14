@@ -57,16 +57,15 @@ void UART5_IRQHandler(void)
 //pclk1:PCLK1时钟频率(Mhz)
 //bound:波特率 
 void uart5_init(u32 pclk2,u32 bound)
-{  	 
+{
 	float temp;
 	u16 mantissa;
-	u16 fraction;	   
-	temp=(float)(pclk2*1000000)/(bound*16);//得到USARTDIV
-	mantissa=temp;				 //得到整数部分
-	fraction=(temp-mantissa)*16; //得到小数部分	 
-    mantissa<<=4;
-	mantissa+=fraction;
-
+	u16 fraction;   
+	temp=(float)(pclk2*1000000)/(bound*16);
+	mantissa=temp; 
+	fraction=(temp-mantissa)*16;  
+	mantissa<<=4;
+	mantissa+=fraction; 
 	// PC12 - UART5_TX PD2 - UART5_RX
 	RCC->APB2ENR |= 1<<4 | 1<<5;   //使能PORTC D口时钟  
 	GPIOC->CRH &= 0XFFF0FFFF;//IO状态设置
@@ -79,11 +78,12 @@ void uart5_init(u32 pclk2,u32 bound)
 	RCC->APB1RSTR &= ~(1<<20);//停止复位
 	
 	//波特率设置
- 	UART5->BRR = mantissa;// 波特率设置	 
+ 	UART5->BRR = mantissa;// 波特率设置
 	UART5->CR1 |= 0X200C;  	//1位停止,无校验位.
-	//使能接收中断 
-	UART5->CR1 |= 1<<5;    	//接收缓冲区非空中断使能	    	
-	MY_NVIC_Init(0,1,UART5_IRQn,2);//组2
+	//使能接收中断
+	UART5->CR1 |= 1<<8;
+	UART5->CR1 |= 1<<5;    	//接收缓冲区非空中断使能  	
+	MY_NVIC_Init(3,3,UART5_IRQn,2);//组2
 	UART5_RX_STA=0;		//清零
 }
 

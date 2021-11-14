@@ -39,6 +39,10 @@ u16 MASK[]={
 void PS2_Init(void)
 {
 #if _USE_SPI
+	RCC->APB2ENR |= 1<<4; //先使能外设PORTC时钟
+	GPIOC->CRL &= 0XFFFFF0FF;
+	GPIOC->CRL |= 0X00000300;
+	GPIOC->ODR |= 0x1<<2;
 	SPI1_Init();
 	SPI2_SetSpeed(SPI_SPEED_64); // 72/8 = 9
 #else
@@ -49,7 +53,7 @@ void PS2_Init(void)
 	GPIOA->CRL &= 0X000FFFFF;
 	GPIOA->CRL |= 0X38300000;
 	GPIOA->ODR |= 0x7<<5;
-#endif									  
+#endif
 }
 
 //向手柄发送命令
@@ -57,7 +61,7 @@ void PS2_Cmd(u8 CMD)
 {
 #if _USE_SPI
 	PS2_JOYPAD_ATT = 0;
-	SPI1_ReadWriteByte(CMD);
+	Data[1] = SPI1_ReadWriteByte(CMD);
 	PS2_JOYPAD_ATT = 1;
 #else
 	volatile u16 ref=0x01;
@@ -86,6 +90,7 @@ void PS2_Cmd(u8 CMD)
 //		  其他，其他模式
 u8 PS2_RedLight(void)
 {
+	PS2_JOYPAD_ATT = 0;
 	PS2_Cmd(Comd[0]);  //开始命令
 	PS2_Cmd(Comd[1]);  //请求数据
 	PS2_JOYPAD_ATT = 1;
@@ -135,6 +140,12 @@ u8 PS2_DataKey()
 
 	PS2_ClearData();
 	PS2_ReadData();
+
+	printf("Data[ ");
+	for( uint8_t i = 0; i < 9; i++) {
+		printf("%02X ", Data[i]);
+	}
+	printf("]\r\n");
 
 	Handkey=(Data[4]<<8)|Data[3];     //这是16个按键  按下为0， 未按下为1
 	for(index=0;index<16;index++)
@@ -188,13 +199,13 @@ void PS2_ShortPoll(void)
 {
 	PS2_JOYPAD_ATT = 0;
 	delay_us(16);
-	PS2_Cmd(0x01);  
-	PS2_Cmd(0x42);  
+	PS2_Cmd(0x01);
+	PS2_Cmd(0x42);
 	PS2_Cmd(0X00);
 	PS2_Cmd(0x00);
 	PS2_Cmd(0x00);
 	PS2_JOYPAD_ATT = 1;
-	delay_us(16);	
+	delay_us(16);
 }
 //进入配置
 void PS2_EnterConfing(void)
@@ -263,6 +274,7 @@ void PS2_ExitConfing(void)
 //手柄配置初始化
 void PS2_SetInit(void)
 {
+	PS2_Init();
 	PS2_ShortPoll();
 	PS2_ShortPoll();
 	PS2_ShortPoll();

@@ -42,13 +42,13 @@ void StartDefaultTask(void const * argument);
 
 int main(void)
 {
-  Stm32_Clock_Init(9);
+  Stm32_Clock_Init(6);
   JTAG_Set(SWD_ENABLE);
   LED_Init();
   // uart_init(72,115200);
-  PS2_Init();
-  uart5_init(32,115200);
-  printf("STM32 F103RET6\n");
+  // usart3_init(36, 115200);
+  uart5_init(36, 115200);
+  printf("STM32 F103RET6\r\n");
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
@@ -84,7 +84,7 @@ void USB_SendData(u8 *str)
 /* StartDefaultTask function */
 void StartDefaultTask(void const * argument)
 {
-  u8 i = 0;
+  //u8 i = 0;
 /*
   char read[31] = {0};
   STMFLASH_Read((uint16_t)MESSAGE_ADDR,(uint8_t *)read,31);//从eeprom读取MCU信息
@@ -107,14 +107,15 @@ void StartDefaultTask(void const * argument)
   uint8_t key = 0;
   uint8_t lx,ly,rx,ry;
   PS2_SetInit();
-  printf("STM32 F103RET6 PS2_SetInit\n");
+  printf("PS2_SetInit\r\n");
+  osDelay(100);//任务延时 会影响系统调度
 
   while (1) {
     key = PS2_DataKey();
 
     if(key != 0) {
         if(key > 0) {
-            printf("key = ", key );
+            printf("key = %d\r\n", key );
         }
 
         if(key == 12) {
@@ -131,11 +132,11 @@ void StartDefaultTask(void const * argument)
     rx = PS2_AnologData(PSS_RX);
     ry = PS2_AnologData(PSS_RY);
 
-    if(1) {
-        printf("x.left = ", lx );
-        printf("x.right = ", ly );
-        printf("y.left = ", rx );
-        printf("y.right = ", ry );
+    if(0) {
+        printf("x.left = %d\r\n", lx );
+        printf("x.right = %d\r\n", ly );
+        printf("y.left = %d\r\n", rx );
+        printf("y.right = %d\r\n", ry );
     }
     LED0 = !LED0;
     osDelay(500);//任务延时 会影响系统调度

@@ -42,10 +42,10 @@ void USART3_IRQHandler(void)
 		{ 
 			if(USART3_RX_STA<USART3_MAX_RECV_LEN)	//还可以接收数据
 			{
-				TIM7->CNT=0;         				//计数器清空
+				// TIM7->CNT=0;         				//计数器清空
 				if(USART3_RX_STA==0) 				//使能定时器7的中断 
 				{
-					TIM7->CR1|=1<<0;     			//使能定时器7
+					// TIM7->CR1|=1<<0;     			//使能定时器7
 				}
 				USART3_RX_BUF[USART3_RX_STA++]=res;	//记录接收到的值	 
 			}else 
@@ -72,9 +72,9 @@ void usart3_init(u32 pclk1,u32 bound)
 	USART3->CR1|=0X200C;  	//1位停止,无校验位.
 	//使能接收中断 
 	USART3->CR1|=1<<5;    	//接收缓冲区非空中断使能	    	
-	MY_NVIC_Init(0,1,USART3_IRQn,2);//组2
-	TIM7_Int_Init(1000-1,7200-1);	//100ms中断
-	TIM7->CR1&=~(1<<0);		//关闭定时器7
+	// MY_NVIC_Init(0,1,USART3_IRQn,2);//组2
+	// TIM7_Int_Init(1000-1,7200-1);	//100ms中断
+	// TIM7->CR1&=~(1<<0);		//关闭定时器7
 	USART3_RX_STA=0;		//清零
 }
 

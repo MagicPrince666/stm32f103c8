@@ -9,7 +9,7 @@ File：PS2驱动程序
 Author：pinggai    Version:1.0     Data:2015/05/16
 Description: PS2驱动程序
 **********************************************************/	 
-#define PS2_JOYPAD_DATA     PAin(6)           //PB12  输入
+#define PS2_JOYPAD_DATA     PAin(6)        //PB12  输入
 #define PS2_JOYPAD_CMND     PAout(7)       //命令位高
 #define PS2_JOYPAD_ATT      PCout(2)       //CS拉高
 #define PS2_JOYPAD_CLOCK    PAout(5)      //时钟拉高
@@ -45,10 +45,6 @@ Description: PS2驱动程序
 #define PSS_RY 6
 #define PSS_LX 7
 #define PSS_LY 8
-
-extern u8 Data[9];
-extern u16 MASK[16];
-extern u16 Handkey;
 
 void PS2_Init(void);
 u8 PS2_RedLight(void);   //判断是否为红灯模式
