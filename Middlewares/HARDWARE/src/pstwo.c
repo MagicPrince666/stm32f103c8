@@ -1,6 +1,7 @@
 #include "pstwo.h"
 #include "usart.h"
 #include "spi.h"
+#include <stdint.h>
 /*********************************************************
 Copyright (C), 2015-2025, YFRobot.
 www.yfrobot.com
@@ -44,7 +45,7 @@ void PS2_Init(void)
 	GPIOC->CRL |= 0X00000300;
 	GPIOC->ODR |= 0x1<<2;
 	SPI1_Init();
-	SPI2_SetSpeed(SPI_SPEED_64); // 72/8 = 9
+	SPI2_SetSpeed(SPI_SPEED_128); // 72/8 = 9
 #else
 	RCC->APB2ENR |= 1<<4 | 1 << 2;//先使能外设PORTC时钟
 	GPIOC->CRL &= 0XFFFFF0FF;
@@ -57,32 +58,34 @@ void PS2_Init(void)
 }
 
 //向手柄发送命令
-void PS2_Cmd(u8 CMD)
+void PS2_Cmd(u8 *CMD, int len)
 {
 #if _USE_SPI
-	PS2_JOYPAD_ATT = 0;
-	Data[1] = SPI1_ReadWriteByte(CMD);
-	PS2_JOYPAD_ATT = 1;
+	int i = 0;
+	for(i = 0; i < len; i++) {
+		Data[i] = SPI1_ReadWriteByte(CMD[i]);
+	}
 #else
 	volatile u16 ref=0x01;
-	Data[1] = 0;
-	for(ref=0x01;ref<0x0100;ref<<=1)
-	{
-		if(ref&CMD)
+	int i = 0;
+	for(i = 0; i < len; i++) {
+		for(ref=0x01;ref<0x0100;ref<<=1)
 		{
-			PS2_JOYPAD_CMND = 1;                   //输出以为控制位
-		}
-		else PS2_JOYPAD_CMND = 0;
+			if(ref&CMD[i])
+			{
+				PS2_JOYPAD_CMND = 1;                   //输出以为控制位
+			}
+			else PS2_JOYPAD_CMND = 0;
 
-		PS2_JOYPAD_CLOCK = 1;                        //时钟拉高
-		delay_us(5);
-		PS2_JOYPAD_CLOCK = 0;
-		delay_us(5);
-		PS2_JOYPAD_CLOCK = 1;
-		if(PS2_JOYPAD_DATA)
-			Data[1] = ref|Data[1];
+			delay_us(5);
+			PS2_JOYPAD_CLOCK = 0;
+			delay_us(5);
+			PS2_JOYPAD_CLOCK = 1;
+
+			if(PS2_JOYPAD_DATA)
+				Data[i] = ref|Data[i];
+		}
 	}
-	delay_us(16);
 #endif
 }
 //判断是否为红灯模式
@@ -91,8 +94,7 @@ void PS2_Cmd(u8 CMD)
 u8 PS2_RedLight(void)
 {
 	PS2_JOYPAD_ATT = 0;
-	PS2_Cmd(Comd[0]);  //开始命令
-	PS2_Cmd(Comd[1]);  //请求数据
+	PS2_Cmd(Comd, sizeof(Comd));
 	PS2_JOYPAD_ATT = 1;
 	if( Data[1] == 0X73)   return 0 ;
 	else return 1;
@@ -103,31 +105,36 @@ void PS2_ReadData(void)
 {
 	volatile u8 byte=0;
 	volatile u16 ref=0x01;
+	u8 comd[9]={0x01,0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 	PS2_JOYPAD_ATT = 0;
 
-	PS2_Cmd(Comd[0]);  //开始命令
-	PS2_Cmd(Comd[1]);  //请求数据
 #if _USE_SPI
-	for(byte=2;byte<9;byte++)          //开始接受数据
+	for(byte=0;byte<9;byte++)          //开始接受数据
 	{
-		Data[byte] = SPI1_ReadWriteByte(0);
+		Data[byte] = SPI1_ReadWriteByte(comd[byte]);
 	}
 #else
-	for(byte=2;byte<9;byte++)          //开始接受数据
+
+	for(byte=0; byte<9; byte++)          //开始接受数据
 	{
-		for(ref=0x01;ref<0x100;ref<<=1)
+		for(ref = 0x01; ref < 0x100; ref <<= 1)
 		{
-			PS2_JOYPAD_CLOCK = 1;
+			if(ref&comd[byte]) {
+				PS2_JOYPAD_CMND = 1;                   //输出以为控制位
+			}
+			else PS2_JOYPAD_CMND = 0;
+
 			delay_us(5);
 			PS2_JOYPAD_CLOCK = 0;
 			delay_us(5);
 			PS2_JOYPAD_CLOCK = 1;
-		      if(PS2_JOYPAD_DATA)
+
+			if(PS2_JOYPAD_DATA)
 		      Data[byte] = ref|Data[byte];
 		}
-        delay_us(16);
 	}
+
 #endif
 	PS2_JOYPAD_ATT = 1;	
 }
@@ -137,12 +144,13 @@ void PS2_ReadData(void)
 u8 PS2_DataKey()
 {
 	u8 index;
+	int i = 0;
 
 	PS2_ClearData();
 	PS2_ReadData();
 
 	printf("Data[ ");
-	for( uint8_t i = 0; i < 9; i++) {
+	for( i = 0; i < 9; i++) {
 		printf("%02X ", Data[i]);
 	}
 	printf("]\r\n");
@@ -180,96 +188,52 @@ Input: motor1:右侧小震动电机 0x00关，其他开
 ******************************************************/
 void PS2_Vibration(u8 motor1, u8 motor2)
 {
+	uint8_t comd[] = {0x01, 0x42, 0X00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+	comd[3] = motor1;
+	comd[4] = motor2;
 	PS2_JOYPAD_ATT = 0;
-	delay_us(16);
-	PS2_Cmd(0x01);  //开始命令
-	PS2_Cmd(0x42);  //请求数据
-	PS2_Cmd(0X00);
-	PS2_Cmd(motor1);
-	PS2_Cmd(motor2);
-	PS2_Cmd(0X00);
-	PS2_Cmd(0X00);
-	PS2_Cmd(0X00);
-	PS2_Cmd(0X00);
+	PS2_Cmd(comd, sizeof(comd));
 	PS2_JOYPAD_ATT = 1;
-	delay_us(16);  
 }
 //short poll
 void PS2_ShortPoll(void)
 {
+	uint8_t comd[] = {0x01, 0x42, 0X00, 0x00, 0x00};
 	PS2_JOYPAD_ATT = 0;
-	delay_us(16);
-	PS2_Cmd(0x01);
-	PS2_Cmd(0x42);
-	PS2_Cmd(0X00);
-	PS2_Cmd(0x00);
-	PS2_Cmd(0x00);
+	PS2_Cmd(comd, sizeof(comd));
 	PS2_JOYPAD_ATT = 1;
-	delay_us(16);
 }
 //进入配置
 void PS2_EnterConfing(void)
 {
+	uint8_t comd[] = {0x01, 0x43, 0X00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00};
 	PS2_JOYPAD_ATT = 0;
-	delay_us(16);
-	PS2_Cmd(0x01);  
-	PS2_Cmd(0x43);  
-	PS2_Cmd(0X00);
-	PS2_Cmd(0x01);
-	PS2_Cmd(0x00);
-	PS2_Cmd(0X00);
-	PS2_Cmd(0X00);
-	PS2_Cmd(0X00);
-	PS2_Cmd(0X00);
+	PS2_Cmd(comd, sizeof(comd));
 	PS2_JOYPAD_ATT = 1;
-	delay_us(16);
 }
 //发送模式设置
 void PS2_TurnOnAnalogMode(void)
 {
+	uint8_t comd[] = {0x01, 0x44, 0X00, 0x01, 0xee, 0x00, 0x00, 0x00, 0x00};
 	PS2_JOYPAD_ATT = 0;
-	PS2_Cmd(0x01);  
-	PS2_Cmd(0x44);  
-	PS2_Cmd(0X00);
-	PS2_Cmd(0x01); //analog=0x01;digital=0x00  软件设置发送模式
-	PS2_Cmd(0xEE); //Ox03锁存设置，即不可通过按键“MODE”设置模式。
-				   //0xEE不锁存软件设置，可通过按键“MODE”设置模式。
-	PS2_Cmd(0X00);
-	PS2_Cmd(0X00);
-	PS2_Cmd(0X00);
-	PS2_Cmd(0X00);
+	PS2_Cmd(comd, sizeof(comd));
 	PS2_JOYPAD_ATT = 1;
-	delay_us(16);
 }
 //振动设置
 void PS2_VibrationMode(void)
 {
+	uint8_t comd[] = {0x01, 0x4d, 0X00, 0x00, 0x01};
 	PS2_JOYPAD_ATT = 0;
-	delay_us(16);
-	PS2_Cmd(0x01);  
-	PS2_Cmd(0x4D);  
-	PS2_Cmd(0X00);
-	PS2_Cmd(0x00);
-	PS2_Cmd(0X01);
+	PS2_Cmd(comd, sizeof(comd));
 	PS2_JOYPAD_ATT = 1;
-	delay_us(16);	
 }
 //完成并保存配置
 void PS2_ExitConfing(void)
 {
-    PS2_JOYPAD_ATT = 0;
-	delay_us(16);
-	PS2_Cmd(0x01);  
-	PS2_Cmd(0x43);  
-	PS2_Cmd(0X00);
-	PS2_Cmd(0x00);
-	PS2_Cmd(0x5A);
-	PS2_Cmd(0x5A);
-	PS2_Cmd(0x5A);
-	PS2_Cmd(0x5A);
-	PS2_Cmd(0x5A);
+	uint8_t comd[] = {0x01, 0x43, 0X00, 0x00, 0x5a, 0x5a, 0x5a, 0x5a, 0x5a};
+	PS2_JOYPAD_ATT = 0;
+	PS2_Cmd(comd, sizeof(comd));
 	PS2_JOYPAD_ATT =1;
-	delay_us(16);
 }
 //手柄配置初始化
 void PS2_SetInit(void)
@@ -283,6 +247,3 @@ void PS2_SetInit(void)
 	PS2_VibrationMode();	//开启震动模式
 	PS2_ExitConfing();		//完成并保存配置
 }
-
-
-
