@@ -108,7 +108,6 @@ void StartDefaultTask(void const * argument)
   uint8_t lx,ly,rx,ry;
   PS2_SetInit();
   printf("PS2_SetInit\r\n");
-  osDelay(100);//任务延时 会影响系统调度
 
   while (1) {
     key = PS2_DataKey();

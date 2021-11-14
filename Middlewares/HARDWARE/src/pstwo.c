@@ -110,7 +110,7 @@ void PS2_ReadData(void)
 	PS2_JOYPAD_ATT = 0;
 
 #if _USE_SPI
-	for(byte=0;byte<9;byte++)          //开始接受数据
+	for(byte = 0; byte < 9; byte++)          //开始接受数据
 	{
 		Data[byte] = SPI1_ReadWriteByte(comd[byte]);
 	}
