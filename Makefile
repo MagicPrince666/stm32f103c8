@@ -20,9 +20,9 @@ TARGET = stm32proj
 # building variables
 ######################################
 # debug build?
-DEBUG = 1
+DEBUG = 0
 # optimization
-OPT = -Og
+OPT = -O2
 
 
 #######################################
@@ -100,6 +100,7 @@ Middlewares/HARDWARE/src/24l01.c \
 Middlewares/HARDWARE/src/timer.c \
 Middlewares/HARDWARE/src/stmflash.c \
 Middlewares/HARDWARE/src/myiic.c \
+Middlewares/HARDWARE/src/usart2.c \
 Middlewares/HARDWARE/src/usart3.c \
 Middlewares/HARDWARE/src/uart5.c \
 Middlewares/MPU6050/mpu6050.c \
@@ -108,6 +109,7 @@ Middlewares/MPU6050/eMPL/inv_mpu_dmp_motion_driver.c \
 Middlewares/MPU6050/eMPL/inv_mpu.c \
 Middlewares/myusb/usb_it.c \
 Middlewares/myusb/usb.c \
+Middlewares/lora/yl_800t.c \
 Middlewares/RC522/MFRC_Task.c \
 Middlewares/RC522/RC522.c \
 Src/usbd_conf.c \
@@ -201,6 +203,7 @@ C_INCLUDES =  \
 -IMiddlewares/MPU6050 \
 -IMiddlewares/MPU6050/eMPL \
 -IMiddlewares/myusb \
+-IMiddlewares/lora \
 -IMiddlewares/RC522/include \
 -IDrivers/CMSIS/Include
 
@@ -277,6 +280,9 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	
 $(BUILD_DIR):
 	mkdir $@		
+
+erase: 
+	st-flash erase
 
 #---------------------------- write to mcu -----------------------------#
 flash: 

@@ -17,10 +17,13 @@
 //LED IO初始化
 void LED_Init(void)
 {
-	RCC->APB2ENR |= 1<<4;    //使能PORTB时钟
+	RCC->APB2ENR |= 1<<3;    //使能PORTB时钟
 
-	GPIOC->CRL &= 0XFFFF0FFF;
-	GPIOC->CRL |= 0X00003000;
-    GPIOC->ODR |= 0x1<<3;
+	// GPIOC->CRL &= 0XFFFF0FFF;
+	// GPIOC->CRL |= 0X00003000;
+    // GPIOC->ODR |= 0x1<<3;
+	GPIOB->CRH &= 0XFF00FFFF;
+	GPIOB->CRH |= 0X00330000;
+    GPIOB->ODR |= 0x3<<12;
 }
 
